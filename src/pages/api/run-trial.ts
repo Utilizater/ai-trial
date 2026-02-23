@@ -41,7 +41,9 @@ export default async function handler(
     sendData({ type: 'connection', status: 'established' });
 
     const trialSequence = sequence;
-    // const trialSequence = await generateITrialSequence(prompt, schema) as ITrialSequence[];
+    // const trialSequence = (await generateITrialSequence(
+    //   prompt
+    // )) as ITrialSequence[];
     sendData(trialSequence);
     const options = {
       ...(judgeName ? { judgeName } : {}),

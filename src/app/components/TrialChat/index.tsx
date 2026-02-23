@@ -3,7 +3,7 @@ import { Typography, List, ListItem, Box } from '@mui/material';
 import { styles } from './styles';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../../lib/store';
-import VideoModal from '../ModalWithVideo';
+import ReactMarkdown from 'react-markdown';
 
 interface Sender {
   type: string;
@@ -28,16 +28,12 @@ interface TrialChatProps {
 
 const TrialChat: React.FC<TrialChatProps> = ({ sseUrlBase, trialPrompt }) => {
   const { judgeName, prosecutorName } = useSelector(
-    (state: RootState) => state.trial
+    (state: RootState) => state.trial,
   );
   // console.log('judgeName', judgeName);
   // console.log('prosecutorName', prosecutorName);
   const [messages, setMessages] = useState<Message[]>([]);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const [modalOpen, setModalOpen] = useState(false);
-
-  const handleModalOpen = () => setModalOpen(true);
-  const handleModalClose = () => setModalOpen(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -75,7 +71,6 @@ const TrialChat: React.FC<TrialChatProps> = ({ sseUrlBase, trialPrompt }) => {
 
     eventSource.onerror = (err) => {
       console.error('SSE error:', err);
-      handleModalOpen();
       eventSource.close();
     };
 
@@ -117,15 +112,15 @@ const TrialChat: React.FC<TrialChatProps> = ({ sseUrlBase, trialPrompt }) => {
                           <Box sx={styles.judgeMessage}>
                             <Typography
                               variant='subtitle2'
-                              sx={{ fontWeight: 'bold' }}>
+                              sx={{ fontWeight: 'bold', mb: 1 }}>
                               Judge
                             </Typography>
-                            <Typography variant='body2'>
-                              {message.content}
-                            </Typography>
+                            <Box sx={styles.markdownContent}>
+                              <ReactMarkdown>{message.content}</ReactMarkdown>
+                            </Box>
                             <Typography
                               variant='caption'
-                              sx={{ display: 'block', mt: 0.5 }}>
+                              sx={{ display: 'block', mt: 1, opacity: 0.7 }}>
                               {new Date(message.timestamp).toLocaleString()}
                             </Typography>
                           </Box>
@@ -135,17 +130,23 @@ const TrialChat: React.FC<TrialChatProps> = ({ sseUrlBase, trialPrompt }) => {
                               <Box sx={styles.judgeMessage}>
                                 <Typography
                                   variant='subtitle2'
-                                  sx={{ fontWeight: 'bold' }}>
+                                  sx={{ fontWeight: 'bold', mb: 1 }}>
                                   Judge
                                 </Typography>
-                                <Typography variant='body2'>
-                                  {message.responseTo.content}
-                                </Typography>
+                                <Box sx={styles.markdownContent}>
+                                  <ReactMarkdown>
+                                    {message.responseTo.content}
+                                  </ReactMarkdown>
+                                </Box>
                                 <Typography
                                   variant='caption'
-                                  sx={{ display: 'block', mt: 0.5 }}>
+                                  sx={{
+                                    display: 'block',
+                                    mt: 1,
+                                    opacity: 0.7,
+                                  }}>
                                   {new Date(
-                                    message.responseTo.timestamp
+                                    message.responseTo.timestamp,
                                   ).toLocaleString()}
                                 </Typography>
                               </Box>
@@ -153,15 +154,15 @@ const TrialChat: React.FC<TrialChatProps> = ({ sseUrlBase, trialPrompt }) => {
                             <Box sx={styles.nonJudgeMessage}>
                               <Typography
                                 variant='subtitle2'
-                                sx={{ fontWeight: 'bold' }}>
+                                sx={{ fontWeight: 'bold', mb: 1 }}>
                                 {getSenderInfo(message.sender)}
                               </Typography>
-                              <Typography variant='body2'>
-                                {message.content}
-                              </Typography>
+                              <Box sx={styles.markdownContent}>
+                                <ReactMarkdown>{message.content}</ReactMarkdown>
+                              </Box>
                               <Typography
                                 variant='caption'
-                                sx={{ display: 'block', mt: 0.5 }}>
+                                sx={{ display: 'block', mt: 1, opacity: 0.7 }}>
                                 {new Date(message.timestamp).toLocaleString()}
                               </Typography>
                             </Box>
@@ -177,7 +178,6 @@ const TrialChat: React.FC<TrialChatProps> = ({ sseUrlBase, trialPrompt }) => {
           </Box>
         </Box>
       </Box>
-      <VideoModal handleClose={handleModalClose} open={modalOpen} />
     </>
   );
 };

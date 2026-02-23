@@ -107,7 +107,7 @@ class Role implements IRole {
       this,
       responseContent,
       new Date(),
-      messages[messages.length - 1]
+      messages[messages.length - 1],
     );
   }
 }
@@ -122,7 +122,7 @@ class Message implements IMessage {
     sender: IRole,
     content: string,
     timestamp: Date,
-    responseTo?: IMessage
+    responseTo?: IMessage,
   ) {
     this.sender = sender;
     this.content = content;
@@ -199,7 +199,7 @@ export class TrialController {
     options?: {
       judgeName?: string;
       prosecutorName?: string;
-    }
+    },
   ) {
     this.context = new TrialContext(sequence);
     this.initialContext = initialContext;
@@ -211,7 +211,7 @@ export class TrialController {
     const initialMessage = new Message(
       RoleFactory.createRole('system'),
       this.initialContext,
-      new Date()
+      new Date(),
     );
     this.context.addMessage(initialMessage);
 
@@ -235,11 +235,31 @@ export class TrialController {
 
       const response = await appRole.speak(this.context.messages);
       this.context.addMessage(response);
-      console.log(
-        'this.context.getLastMessage()',
-        this.context.getLastMessage()
-      );
-      callback(this.context.getLastMessage());
+
+      const lastMessage = this.context.getLastMessage();
+      console.log('this.context.getLastMessage()', lastMessage);
+
+      // Serialize the message properly for SSE transmission
+      const serializedMessage = {
+        sender: {
+          type: lastMessage.sender.type,
+          name: lastMessage.sender.name || '',
+        },
+        content: lastMessage.content,
+        timestamp: lastMessage.timestamp.toISOString(),
+        responseTo: lastMessage.responseTo
+          ? {
+              sender: {
+                type: lastMessage.responseTo.sender.type,
+                name: lastMessage.responseTo.sender.name || '',
+              },
+              content: lastMessage.responseTo.content,
+              timestamp: lastMessage.responseTo.timestamp.toISOString(),
+            }
+          : undefined,
+      };
+
+      callback(serializedMessage);
 
       nextSequence = this.context.getNextSequence();
     }

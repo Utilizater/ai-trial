@@ -18,9 +18,7 @@ export const styles: Styles = {
     flexDirection: 'column',
     overflow: 'hidden',
     padding: 1,
-    // paddingLeft: '10px',
     bgcolor: '#1A1938',
-    // border: '2px solid white',
   },
   heading: {
     fontFamily: 'var(--font-damion)',
@@ -32,39 +30,38 @@ export const styles: Styles = {
   },
   inputContainer: {
     bgcolor: 'white',
-    // border: '2px solid red',
     width: '90%',
-    height: '80%',
-    maxHeight: 'calc(100% - 60px)', // Adjust 60px based on your heading's height
+    flex: 1,
+    minHeight: 0,
     borderRadius: 1,
     p: 2,
     display: 'flex',
     flexDirection: 'column',
-    alignSelf: 'center', // This will center the container horizontally
-    overflow: 'auto', // Add scrolling if content exceeds container height
+    alignSelf: 'center',
+    overflow: 'hidden',
   },
   textarea: {
-    width: '95%',
-    padding: '8px',
-    border: '1px solid rgba(0, 0, 0, 0.23)', // Changed to be visible on white background
+    width: '100%',
+    padding: '12px',
+    border: '1px solid rgba(0, 0, 0, 0.23)',
     borderRadius: '4px',
     resize: 'none',
     overflow: 'auto',
     backgroundColor: 'transparent',
-    color: 'black', // Changed to be visible on white background
+    color: 'black',
     flex: 1,
+    minHeight: '150px',
     marginBottom: '16px',
-    outline: 'none', // Remove the default focus outline
-    // '&:focus': {
-    //   border: '1px solid rgba(0, 0, 0, 0.23)', // Keep the same border on focus
-    //   boxShadow: 'none', // Remove any focus shadow
-    // },
+    outline: 'none',
+    fontFamily: 'inherit',
+    fontSize: '14px',
+    lineHeight: '1.5',
   },
   buttonContainer: {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    mt: 2,
+    mt: 1,
   },
   button: {
     color: '#B7DA3D',
